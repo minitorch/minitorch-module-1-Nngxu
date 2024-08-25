@@ -92,6 +92,7 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
     return result
 
 
+# variable is Scalar instance, it has implemented Variable interface
 def backpropagate(variable: Variable, deriv: Any) -> None:
     """
     Runs backpropagation on the computation graph in order to
@@ -103,34 +104,22 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
 
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
-
+    # Output like(Computation Graph of test_backprop3): 
+    # ordered_vars = [Scalar(30.000000), Scalar(10.000000), Scalar(0.000000), Scalar(10.000000), Scalar(0.000000), Scalar(0.000000)]
     ordered_vars: Iterable[Variable] = topological_sort(variable)
     # Record the derivative of each variable
+    # {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
     derivatives: Dict[int, Any] = {var.unique_id: 0 for var in ordered_vars}
+    # {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 5} (d_output of var4 is 5, unique_id of var4 is 6)
     derivatives[variable.unique_id] = deriv
-    # For following computation graph:
-    #       v2 = f1(v1)
-    #     |------------> v2 --->| v2 = f1(v2, v3)       
-    #  v1 | v3 = f1(v1)         |-----------------> v4 ----- y
-    #     |------------> v3 --->| 
-
-    # ExampleA: If var is v4
-    # ExampleB: If var is v2
     for var in ordered_vars:
         if var.is_leaf():
-            var.accumulate_derivative(derivatives[var.unique_id])
+            var.accumulate_derivative(derivatives[var.unique_id]) # Only leaf variables can have derivatives, so accumulate derivative for leaf variables in many iterations
         else:
-            # ExampleA: d_output of v4 is \hat{v_4}
-            # ExampleB: d_output of v2 = \hat{v_2}
             d_output = derivatives[var.unique_id]
-            # ExampleA: parent_var is v2, deriv is \hat{v_{2->4}} * \hat{v_4}
-            #           parent_var is v3, deriv is \hat{v_{3->4}} * \hat{v_4}
-            # ExampleB: parent_var is v1, deriv is \hat{v_{1->2}} * \hat{v_2}
             for parent_var, deriv in var.chain_rule(d_output):
                 if parent_var.is_constant():
                     continue
-                # ExampleA: add \hat{v_{2->4}}, \hat{v_{3->4}} to list as the derivative of v2(\hat{v_2}), v3(\hat{v_3})
-                # ExampleB: add \hat{v_{1->2}} to list as the partial derivative of v1(\hat{v_1})
                 if parent_var.unique_id in derivatives:
                     derivatives[parent_var.unique_id] += deriv
                 else:
