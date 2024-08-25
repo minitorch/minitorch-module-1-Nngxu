@@ -6,7 +6,7 @@ import minitorch.operators as operators
 
 A = TypeVar("A")
 
-
+# MathTest is useful in `Module0:Math Sandbox` of `steamlit run app.py`
 class MathTest(Generic[A]):
     @staticmethod
     def neg(a: A) -> A:
@@ -225,6 +225,7 @@ class MathTest(Generic[A]):
         return one_arg, two_arg, red_arg
 
 
+# MathTest is useful in `Module1:Scalar Sandbox` of `steamlit run app.py`
 class MathTestVariable(MathTest):
     @staticmethod
     def inv(a):
