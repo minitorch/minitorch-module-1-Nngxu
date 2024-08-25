@@ -33,8 +33,7 @@ class Module:
         """
         Set the mode of this module and all descendent modules to `train`.
 
-        The following code is aimed to show structure of recursive function,
-        it can be implemented in a more concise way:
+        It can be implemented in a more concise way:
             ```
             self.training = True
             list = self.modules()
@@ -42,6 +41,7 @@ class Module:
                 x.train()
 
             ```
+        The following code is aimed to show structure of recursive function.
         """
         # base case
         if len(self.modules()) == 0:
@@ -56,10 +56,9 @@ class Module:
 
     def eval(self) -> None:
         """
-        Set the mode of this module and all descendent modules to `eval`.
+        Set the mode of this module and all descendent modules to `eval`(same as Inference).
 
-        The following code is aimed to show structure of recursive function,
-        it can be implemented in a more concise way:
+        It can be implemented in a more concise way:
             ```
             self.training = False
             list = self.modules()
@@ -67,6 +66,8 @@ class Module:
                 x.eval()
 
             ```
+
+        The following code is aimed to show structure of recursive function.
         """
         # base case
         if len(self.modules()) == 0:
@@ -83,8 +84,7 @@ class Module:
         """
         Collect all the parameters of this module and its descendents.
 
-        The following code is aimed to show structure of recursive function,
-        it can be implemented in a more concise way:
+        It can be implemented in a more concise way:
             ```
             named_params = list(self._parameters.items())
             for name, mod in self._modules.items():
@@ -94,8 +94,11 @@ class Module:
 
         Returns:
             The name and `Parameter` of each ancestor parameter.
+
+        The following code is aimed to show structure of recursive function.
         """
         # base case
+        # items() method returns a view object that can be iterated through as a tuple
         if len(self._modules.items()) == 0:
             named_params = list(self._parameters.items())
             return named_params
@@ -110,14 +113,15 @@ class Module:
         """
         Enumerate over all the parameters of this module and its descendents.
 
-        The following code is aimed to show structure of recursive function,
-        it can be implemented in a more concise way:
+        It can be implemented in a more concise way:
             ```
             allparam = list(self._parameters.values())
             for mod in self.modules():
                 allparam += mod.parameters()
             return allparam
             ```
+
+        The following code is aimed to show structure of recursive function.
         """
         if len(self._modules.items()) == 0:
             return list(self._parameters.values())
