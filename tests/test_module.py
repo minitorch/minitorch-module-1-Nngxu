@@ -18,9 +18,13 @@ from .strategies import med_ints, small_floats
 class ModuleA1(minitorch.Module):
     def __init__(self) -> None:
         super().__init__()
+        # __setattr__ will be call when we want to add a attribute for instance
         self.p1 = minitorch.Parameter(5)
+        # __setattr__ will be call when we want to add a attribute for instance
         self.non_param = 10
+        # __setattr__ will be call when we want to add a attribute for instance
         self.a = ModuleA2()
+        # __setattr__ will be call when we want to add a attribute for instance
         self.b = ModuleA3()
 
 
@@ -50,6 +54,7 @@ def test_stacked_demo() -> None:
 
     x = str(mod)
     print(x)
+    # __getattr__ will be call when we want to get a unknown attribute for instance
     assert mod.p1.value == 5
     assert mod.non_param == 10
 

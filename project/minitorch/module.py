@@ -20,6 +20,7 @@ class Module:
     training: bool
 
     def __init__(self) -> None:
+        # The following three lines will call `Module.__setattr__`
         self._modules = {}
         self._parameters = {}
         self.training = True
@@ -33,7 +34,8 @@ class Module:
         """
         Set the mode of this module and all descendent modules to `train`.
 
-        It can be implemented in a more concise way:
+        The following code is aimed to show structure of recursive function,
+        it can be implemented in a more concise way:
             ```
             self.training = True
             list = self.modules()
@@ -41,7 +43,6 @@ class Module:
                 x.train()
 
             ```
-        The following code is aimed to show structure of recursive function.
         """
         # base case
         if len(self.modules()) == 0:
@@ -56,9 +57,10 @@ class Module:
 
     def eval(self) -> None:
         """
-        Set the mode of this module and all descendent modules to `eval`(same as Inference).
+        Set the mode of this module and all descendent modules to `eval`.
 
-        It can be implemented in a more concise way:
+        The following code is aimed to show structure of recursive function,
+        it can be implemented in a more concise way:
             ```
             self.training = False
             list = self.modules()
@@ -66,8 +68,6 @@ class Module:
                 x.eval()
 
             ```
-
-        The following code is aimed to show structure of recursive function.
         """
         # base case
         if len(self.modules()) == 0:
@@ -84,7 +84,8 @@ class Module:
         """
         Collect all the parameters of this module and its descendents.
 
-        It can be implemented in a more concise way:
+        The following code is aimed to show structure of recursive function,
+        it can be implemented in a more concise way:
             ```
             named_params = list(self._parameters.items())
             for name, mod in self._modules.items():
@@ -94,11 +95,8 @@ class Module:
 
         Returns:
             The name and `Parameter` of each ancestor parameter.
-
-        The following code is aimed to show structure of recursive function.
         """
         # base case
-        # items() method returns a view object that can be iterated through as a tuple
         if len(self._modules.items()) == 0:
             named_params = list(self._parameters.items())
             return named_params
@@ -113,15 +111,14 @@ class Module:
         """
         Enumerate over all the parameters of this module and its descendents.
 
-        It can be implemented in a more concise way:
+        The following code is aimed to show structure of recursive function,
+        it can be implemented in a more concise way:
             ```
             allparam = list(self._parameters.values())
             for mod in self.modules():
                 allparam += mod.parameters()
             return allparam
             ```
-
-        The following code is aimed to show structure of recursive function.
         """
         if len(self._modules.items()) == 0:
             return list(self._parameters.values())
@@ -148,6 +145,7 @@ class Module:
 
     def __setattr__(self, key: str, val: Parameter) -> None:
         # __setattr__ will be call when we want to add a attribute for instance
+        # key is the attribute name, val is the attribute value
         if isinstance(val, Parameter):
             self.__dict__["_parameters"][key] = val
         elif isinstance(val, Module):
@@ -167,72 +165,72 @@ class Module:
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         return self.forward(*args, **kwargs)
 
-    def __repr__(self) -> str:
-        # base case
-        if len(self._modules.items()) == 0:
-            return self.__class__.__name__ + "()"
+    # def __repr__(self) -> str:
+    #     # base case
+    #     if len(self._modules.items()) == 0:
+    #         return self.__class__.__name__ + "()"
 
-        # recursive case
-        def _addindent(s_: str, numSpaces: int) -> str:
-            """
-            Add spaces to the beginning of each line of a string.
+    #     # recursive case
+    #     def _addindent(s_: str, numSpaces: int) -> str:
+    #         """
+    #         Add spaces to the beginning of each line of a string.
 
-            Example:
-                s = "Hello\nWorld\nThis is a test"
-                print(_addindent(s, 4))
+    #         Example:
+    #             s = "Hello\nWorld\nThis is a test"
+    #             print(_addindent(s, 4))
 
-                Output:
-                Hello
-                    World
-                    This is a test
-            """
-            # s = "Hello\nWorld\nThis is a test"
-            # s.split("\n") -> output：['Hello', 'World', 'This is a test']
-            s2 = s_.split("\n")
-            if len(s2) == 1:
-                return s_
-            first = s2.pop(0)
-            # The most important line of code in tree format output
-            s2 = [(numSpaces * " ") + line for line in s2]
-            # "_".join: using `_` concatenate between the elements of a list into a string
-            # s = ["Hello", "World", "This", "is", "a", "test"], s1 = ["Hello"]
-            # " ".join(s) -> output: 'Hello World This is a test'
-            # " ".join(s1) -> output: 'Hello'
-            s = "\n".join(s2)
-            s = first + "\n" + s
-            return s
+    #             Output:
+    #             Hello
+    #                 World
+    #                 This is a test
+    #         """
+    #         # s = "Hello\nWorld\nThis is a test"
+    #         # s.split("\n") -> output：['Hello', 'World', 'This is a test']
+    #         s2 = s_.split("\n")
+    #         if len(s2) == 1:
+    #             return s_
+    #         first = s2.pop(0)
+    #         # The most important line of code in tree format output
+    #         s2 = [(numSpaces * " ") + line for line in s2]
+    #         # "_".join: using `_` concatenate between the elements of a list into a string
+    #         # s = ["Hello", "World", "This", "is", "a", "test"], s1 = ["Hello"]
+    #         # " ".join(s) -> output: 'Hello World This is a test'
+    #         # " ".join(s1) -> output: 'Hello'
+    #         s = "\n".join(s2)
+    #         s = first + "\n" + s
+    #         return s
 
-        child_lines = []
+    #     child_lines = []
 
-        for key, module in self._modules.items():
-            mod_str = repr(module)
-            # Add two spaces at the begin of child modules
-            # method: Add two spaces after all `\n`
-            # because before the first `\n` is the parent module class name
-            # cause by `main_str += "\n  " + "\n  ".join(lines) + "\n"`
-            mod_str = _addindent(mod_str, 2)
-            child_lines.append("(" + key + "): " + mod_str)
-        lines = child_lines
+    #     for key, module in self._modules.items():
+    #         mod_str = repr(module)
+    #         # Add two spaces at the begin of child modules
+    #         # method: Add two spaces after all `\n`
+    #         # because before the first `\n` is the parent module class name
+    #         # cause by `main_str += "\n  " + "\n  ".join(lines) + "\n"`
+    #         mod_str = _addindent(mod_str, 2)
+    #         child_lines.append("(" + key + "): " + mod_str)
+    #     lines = child_lines
 
-        main_str = self.__class__.__name__ + "("
-        if lines:
-            # add fomatting for same level modules
-            # example:lines = '(c): ModuleA4()', main_str = ModuleA3(
-            # output: "\n  ".join(lines) = '(c): ModuleA4()'
-            #                   main_str = 'ModuleA3(\n  (c): ModuleA4()\n'
-            # first "\n ": before "\n " -> parent module class name, here is `ModuleA3(`
-            #              after "\n" -> chile module name + chile module Class name,here is `(c): ModuleA4()`
-            # second "\n ": using `\n ` sepereate multiple child modules
-            # final "\n": end of the string
-            # Another example:
-            # lines = ['(a): ModuleA2()', '(b): ModuleA3()']
-            # main_str = 'ModuleA1('
-            # after execute folllowing code:
-            # main_str = 'ModuleA1(\n  (a): ModuleA2()\n  (b): ModuleA3()\n'
-            main_str += "\n  " + "\n  ".join(lines) + "\n"
+    #     main_str = self.__class__.__name__ + "("
+    #     if lines:
+    #         # add fomatting for same level modules
+    #         # example:lines = '(c): ModuleA4()', main_str = ModuleA3(
+    #         # output: "\n  ".join(lines) = '(c): ModuleA4()'
+    #         #                   main_str = 'ModuleA3(\n  (c): ModuleA4()\n'
+    #         # first "\n ": before "\n " -> parent module class name, here is `ModuleA3(`
+    #         #              after "\n" -> chile module name + chile module Class name,here is `(c): ModuleA4()`
+    #         # second "\n ": using `\n ` sepereate multiple child modules
+    #         # final "\n": end of the string
+    #         # Another example:
+    #         # lines = ['(a): ModuleA2()', '(b): ModuleA3()']
+    #         # main_str = 'ModuleA1('
+    #         # after execute folllowing code:
+    #         # main_str = 'ModuleA1(\n  (a): ModuleA2()\n  (b): ModuleA3()\n'
+    #         main_str += "\n  " + "\n  ".join(lines) + "\n"
 
-        main_str += ")"
-        return main_str
+    #     main_str += ")"
+    #     return main_str
 
 
 class Parameter:

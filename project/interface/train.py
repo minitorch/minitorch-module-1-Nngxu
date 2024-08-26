@@ -139,6 +139,7 @@ def render_train_interface(
                 f"Epoch: {epoch}/{max_epochs}, loss: {total_loss}, correct: {correct}"
             )
 
+    # Start of training
     if hasattr(train, "train") and st_train_button.button("Train Model"):
         train.train(dataset, learning_rate, max_epochs, log_fn)
     else:
