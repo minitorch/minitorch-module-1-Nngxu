@@ -73,7 +73,9 @@ one_arg, two_arg, _ = MathTestVariable._comp_testing()
 
 @given(small_scalars)
 @pytest.mark.task1_2
-@pytest.mark.parametrize("fn", one_arg) # "fn" is parameterized with the one_arg list, each time it is called, it will take a tuple from the one_arg list
+@pytest.mark.parametrize(
+    "fn", one_arg
+)  # "fn" is parameterized with the one_arg list, each time it is called, it will take a tuple from the one_arg list
 def test_one_args(
     fn: Tuple[str, Callable[[float], float], Callable[[Scalar], Scalar]], t1: Scalar
 ) -> None:

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Iterable, List, Tuple, Set, Dict
+from typing import Any, Dict, Iterable, List, Set, Tuple
 
 from typing_extensions import Protocol
 
@@ -67,7 +67,7 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
         Non-constant Variables in topological order starting from the right.
     """
     # DFS explanation and recursive implementation: https://youtu.be/PMMc4VsIacU?t=81
-    marked: Set[bool] = set() # marked is visited node set(`Scalar` unique_id set)
+    marked: Set[bool] = set()  # marked is visited node set(`Scalar` unique_id set)
 
     result: List[int] = []
     # visited: List[int] = list()
@@ -76,7 +76,9 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
         result.append(v)
 
     def dfs(v: Variable) -> None:
-        if v.is_constant(): # if Scalar instance v has no ScalarHistory(history is None), it is constant
+        if (
+            v.is_constant()
+        ):  # if Scalar instance v has no ScalarHistory(history is None), it is constant
             return
 
         marked.add(v.unique_id)
@@ -86,7 +88,7 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
                 dfs(w)
         visit(v)
 
-    dfs(variable) # start from the right-most variable
+    dfs(variable)  # start from the right-most variable
 
     result = list(reversed(result))
     return result
@@ -110,9 +112,9 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     derivatives[variable.unique_id] = deriv
     # For following computation graph:
     #       v2 = f1(v1)
-    #     |------------> v2 --->| v2 = f1(v2, v3)       
+    #     |------------> v2 --->| v2 = f1(v2, v3)
     #  v1 | v3 = f1(v1)         |-----------------> v4 ----- y
-    #     |------------> v3 --->| 
+    #     |------------> v3 --->|
 
     # ExampleA: If var is v4
     # ExampleB: If var is v2

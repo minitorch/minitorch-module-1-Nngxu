@@ -41,7 +41,9 @@ class ScalarFunction:
         return wrap_tuple(cls.backward(ctx, d_out))  # type: ignore
 
     @classmethod
-    def _forward(cls, ctx: Context, *inps: float) -> float: # *inps: variable length argument collection
+    def _forward(
+        cls, ctx: Context, *inps: float
+    ) -> float:  # *inps: variable length argument collection
         # *inps in here means unpack
         # forward function does two things: 1. save the input value(if necessary) 2. return the output value
         return cls.forward(ctx, *inps)  # type: ignore
@@ -58,7 +60,7 @@ class ScalarFunction:
                 scalars.append(minitorch.scalar.Scalar(v))
                 raw_vals.append(v)
 
-        # Create the context.(no_grad = False ==> when forward compute, if nessary, save the input value as float type)  
+        # Create the context.(no_grad = False ==> when forward compute, if nessary, save the input value as float type)
         ctx = Context(False)
 
         # Call forward with the variables.
@@ -116,7 +118,10 @@ class Mul(ScalarFunction):
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> Tuple[float, float]:
-        (a, b, ) = ctx.saved_values 
+        (
+            a,
+            b,
+        ) = ctx.saved_values
         # derivative of input a, b
         return operators.mul(b, d_output), operators.mul(a, d_output)
 
@@ -131,8 +136,9 @@ class Inv(ScalarFunction):
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
-        (a, ) = ctx.saved_values
+        (a,) = ctx.saved_values
         return operators.inv_back(a, d_output)
+
 
 class Neg(ScalarFunction):
     "Negation function"
@@ -147,7 +153,6 @@ class Neg(ScalarFunction):
         return operators.mul(-1.0, d_output)
 
 
-
 class Sigmoid(ScalarFunction):
     "Sigmoid function"
 
@@ -158,7 +163,7 @@ class Sigmoid(ScalarFunction):
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
-        (a, ) = ctx.saved_values
+        (a,) = ctx.saved_values
         return operators.sigmoid_back(a, d_output)
 
 
@@ -172,8 +177,9 @@ class ReLU(ScalarFunction):
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
-        (a, ) = ctx.saved_values
+        (a,) = ctx.saved_values
         return operators.relu_back(a, d_output)
+
 
 class Exp(ScalarFunction):
     "Exp function"
@@ -185,7 +191,7 @@ class Exp(ScalarFunction):
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
-        (a, ) = ctx.saved_values
+        (a,) = ctx.saved_values
         return operators.exp(a) * d_output
 
 

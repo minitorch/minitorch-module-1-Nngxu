@@ -20,7 +20,7 @@ from .scalar_functions import (
     Sigmoid,
 )
 
-# ScalarLike can be `float`, `int` and `Scalar` type 
+# ScalarLike can be `float`, `int` and `Scalar` type
 ScalarLike = Union[float, int, "Scalar"]
 
 
@@ -36,6 +36,7 @@ class ScalarHistory:
         inputs : The inputs that were given when `last_fn.forward` was called.
 
     """
+
     # last_fn is Class type of ScalarFunction(not instance of ScalarFunction)
     last_fn: Optional[Type[ScalarFunction]] = None
     ctx: Optional[Context] = None
@@ -147,7 +148,7 @@ class Scalar:
         assert self.is_leaf(), "Only leaf variables can have derivatives."
         if self.derivative is None:
             self.derivative = 0.0
-        self.derivative += x # Each iteration, derivative is accumulated
+        self.derivative += x  # Each iteration, derivative is accumulated
 
     def is_leaf(self) -> bool:
         "True if this variable created by the user (no `last_fn`)"
@@ -167,7 +168,7 @@ class Scalar:
         assert h.last_fn is not None
         assert h.ctx is not None
 
-        # if we konw \hat{vj}(d_output in here), `f`: vj = f(vi) 
+        # if we konw \hat{vj}(d_output in here), `f`: vj = f(vi)
         # we need to get \hat{v_{i->j}} by chain rule
         # \hat{v_{i->j}} = \hat{v_j} * f'(v_i)
         # v_i in here is `h.ctx.saved_values`
@@ -186,7 +187,9 @@ class Scalar:
         """
         if d_output is None:
             d_output = 1.0
-        backpropagate(self, d_output) # for the most right variable, derivative is d_output
+        backpropagate(
+            self, d_output
+        )  # for the most right variable, derivative is d_output
 
 
 def derivative_check(f: Any, *scalars: Scalar) -> None:

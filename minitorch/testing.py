@@ -6,6 +6,7 @@ import minitorch.operators as operators
 
 A = TypeVar("A")
 
+
 # MathTest is useful in `Module0:Math Sandbox` of `steamlit run app.py`
 class MathTest(Generic[A]):
     @staticmethod
@@ -137,12 +138,17 @@ class MathTest(Generic[A]):
         one_arg = []
         two_arg = []
         red_arg = []
-        for k in dir(MathTest): # dir(MathTest) returns a list of all the attributes name(str type) in the MathTest class
+        for k in dir(
+            MathTest
+        ):  # dir(MathTest) returns a list of all the attributes name(str type) in the MathTest class
             if callable(getattr(MathTest, k)) and not k.startswith("_"):
                 # base_fn is <function MathTest.xxx at xxxxxx>
                 base_fn = getattr(cls, k)
                 # scalar_fn = getattr(cls, k)
-                tup = (k, base_fn) # tup is like ('add2', <function MathTest.add2 at 0x7f8ad8d18820>)
+                tup = (
+                    k,
+                    base_fn,
+                )  # tup is like ('add2', <function MathTest.add2 at 0x7f8ad8d18820>)
                 if k.endswith("2"):
                     two_arg.append(tup)
                 elif k.endswith("red"):

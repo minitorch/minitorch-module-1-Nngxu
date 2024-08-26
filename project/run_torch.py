@@ -53,7 +53,9 @@ class TorchTrain:
         max_epochs=500,
         log_fn=default_log_fn,
     ):
-        self.model = Network(self.hidden_layers) # This line is randundant for `__main__`
+        self.model = Network(
+            self.hidden_layers
+        )  # This line is randundant for `__main__`
         self.max_epochs = max_epochs
         model = self.model
 
@@ -65,10 +67,10 @@ class TorchTrain:
             out = model.forward(torch.tensor(data.X, requires_grad=True)).view(data.N)
             y = torch.tensor(data.y)
             # binary cross entropy
-            # y = 1(true result): probs = out 
+            # y = 1(true result): probs = out
             # y = 0(true result): probs = 1 - out
             probs = (out * y) + (out - 1.0) * (y - 1.0)
-            # More info about cross entropy loss: https://www.youtube.com/watch?v=6ArSys5qHAU 
+            # More info about cross entropy loss: https://www.youtube.com/watch?v=6ArSys5qHAU
             loss = -probs.log().sum()
 
             # Update
@@ -94,7 +96,7 @@ class TorchTrain:
 
 
 if __name__ == "__main__":
-    PTS = 250    # points number
-    HIDDEN = 10 # hidden layers
+    PTS = 250  # points number
+    HIDDEN = 10  # hidden layers
     RATE = 0.5  # learning rate
     TorchTrain(HIDDEN).train(minitorch.datasets["Xor"](PTS), RATE)

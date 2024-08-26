@@ -111,6 +111,7 @@ def relu_back(x: float, d: float) -> float:
     r"If $f = relu$ compute $d \times f'(x)$"
     return d if x > 0 else 0
 
+
 def sigmoid_back(x: float, d: float) -> float:
     r"If $f = sigmoid$ compute $d \times f'(x)$"
     # refer to https://math.stackexchange.com/questions/78575/derivative-of-sigmoid-function-sigma-x-frac11e-x
